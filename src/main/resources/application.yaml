@@ -1,0 +1,84 @@
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    probes:
+      enabled: false
+    circuitbreakers:
+      enabled: true
+    bulkheads:
+      enabled: true
+    ratelimiters:
+      enabled: true
+    retries:
+      enabled: true
+
+resilience4j:
+  retry:
+    instances:
+      retryApi:
+        max-attempts: 3
+        wait-duration: 5s
+  ratelimiter:
+    instances:
+      rateLimiterApi:
+        register-health-indicator: true
+        limit-for-period: 5
+        limit-refresh-period: 60s
+        timeout-duration: 0s
+        subscribe-for-events: true
+        allow-health-indicator-to-fail: true
+        event-consumer-buffer-size: 50
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1
+    configs:
+      default:
+        register-health-indicator: true
+    instances:
+      circuit-breaker:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: count_based
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+      circuit-breaker-by-time:
+        base-config: default
+        failure-rate-threshold: "50"
+        slow-call-rate-threshold: "50"
+        slow-call-duration-threshold: "2s"
+        sliding-window-type: "TIME_BASED"
+        sliding-window-size: "5"
+        minimum-number-of-calls: "5"
+        wait-duration-in-open-state: "25s"
+        max-wait-duration-in-half-open-state: "10s"
+        permitted-number-of-calls-in-half-open-state: "3"
+        automatic-transition-from-open-to-half-open-enabled: "false"
+        record-exceptions: ""
+        ignore-exceptions: ""
+        register-health-indicator: true
+    metrics:
+      legacy:
+        enabled: true
+      enabled: true
+  bulkhead:
+    metrics:
+      enabled: true
+    instance:
+      bulkheadApi:
+        max-concurrent-calls: 3
+        max-wait-duration: 1
+
+  metrics:
+    legacy:
+      enabled: true
+    enabled: true
