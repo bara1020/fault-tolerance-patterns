@@ -1,5 +1,6 @@
 
-# MICROSERVICIO PATRONES DE CONTROL CONTRA EL FALLO
+# MICROSERVICIO PATRONES DE TOLERANCIA AL FALLO
+
 Este servicio tiene el ejemplo de configuración con la librería resilience4j para springboot para la implementación 
 de los patrones de control contra fallos.
 
